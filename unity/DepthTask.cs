@@ -28,6 +28,10 @@ public class DepthTask : MonoBehaviour
     State state = State.Intro;
 
     public float moveSpeed = 1.6f;
+
+    // Drag any Material from the Assets folder in here. Using a real material asset makes
+    // sure its shader is included in the web build (otherwise everything shows up pink).
+    public Material baseMaterial;
     const int TrialsPerBlock = 5;
 
     // Two fixed sets of target positions, so every player gets the same targets.
@@ -260,6 +264,7 @@ public class DepthTask : MonoBehaviour
         g.transform.localScale = scl;
         Destroy(g.GetComponent<Collider>());
         Renderer rend = g.GetComponent<Renderer>();
+        if (baseMaterial != null) rend.material = new Material(baseMaterial);
         rend.material.color = c;
         rend.shadowCastingMode = ShadowCastingMode.Off;
         if (parent != null) g.transform.SetParent(parent, true);
