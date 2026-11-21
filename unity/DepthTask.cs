@@ -69,6 +69,7 @@ public class DepthTask : MonoBehaviour
     // ------------------------------------------------------------------ SETUP
     void Start()
     {
+        Random.InitState((int)(System.DateTime.Now.Ticks % int.MaxValue));   // new random sequence every page load
         // Real shadows are a depth cue too, so turn them off for a fair comparison
         foreach (Light l in FindObjectsByType<Light>(FindObjectsSortMode.None)) l.shadows = LightShadows.None;
 
@@ -185,7 +186,15 @@ public class DepthTask : MonoBehaviour
     {
         block = b;
         trial = 0;
-        if (b == 0) guidesFirst = Random.value < 0.5f;   // coin flip
+        if (b == 0)
+        {
+            // Round order comes from the link: ?first=on or ?first=off.
+            // Without either, fall back to a coin flip.
+            string url = Application.absoluteURL;
+            if (url.Contains("first=on")) guidesFirst = true;
+            else if (url.Contains("first=off")) guidesFirst = false;
+            else guidesFirst = Random.value < 0.5f;
+        }
         guidesOn = (b == 0) ? guidesFirst : !guidesFirst;
         state = State.Trial;
         ShowObjects(true);
